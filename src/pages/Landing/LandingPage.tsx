@@ -1,5 +1,5 @@
 import React from "react";
-import Navbar from "../../components/Navbar/navbar";
+import Navbar from "../../components/Navbar/Navbar";
 import HeroSection from "./HeroSection";
 import AboutSection from "./AboutSection";
 import ProductsSection from "./ProductsSection" // Assuming you have a ProductsSection component

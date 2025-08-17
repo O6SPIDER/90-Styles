@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 
 interface JerseyData {
@@ -82,15 +82,6 @@ const JerseyCard = ({ jersey }: { jersey: JerseyData }) => {
             </motion.button>
           ))}
         </div>
-
-        {/* Add to Cart */}
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="w-full py-4 rounded-full font-bold text-lg text-white bg-gradient-to-r from-pink-500 to-purple-600 shadow-lg transition-all duration-300"
-        >
-          Add to Cart
-        </motion.button>
       </div>
 
       {/* Custom Animations */}
