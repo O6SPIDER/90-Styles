@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+/* Custom theme overrides */
+html {
+  background-color: #f5f5f5;
+  color: #111827;
+}
+
+html.dark {
+  background-color: #111827;
+  color: #f5f5f5;
+}
