@@ -12,14 +12,14 @@ const Footer: React.FC = () => {
   ];
 
   return (
-    <footer className="bg-gray-900 text-gray-200 px-6 py-12">
+    <footer className="bg-[#f5f5f5] dark:bg-[#0f172a] text-gray-700 dark:text-gray-400 px-6 py-4 transition-colors duration-300">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Brand & Description */}
         <div className="space-y-4">
           <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-yellow-400">
             90+ Styles
           </h1>
-          <p className="text-gray-400">
+          <p className="text-gray-600 dark:text-gray-400">
             Premium sports apparel and custom jerseys. Stay updated with our latest collections and offers.
           </p>
 
@@ -32,7 +32,7 @@ const Footer: React.FC = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.2 }}
-                className="text-gray-400 hover:text-pink-500 transition-colors duration-300 text-xl"
+                className="text-gray-600 dark:text-gray-400 hover:text-pink-500 transition-colors duration-300 text-xl"
               >
                 {link.icon}
               </motion.a>
@@ -47,7 +47,7 @@ const Footer: React.FC = () => {
             <a
               key={idx}
               href={`#${link.toLowerCase().replace(/\s+/g, "")}`}
-              className="block text-gray-400 hover:text-pink-500 transition-colors duration-300"
+              className="block text-gray-600 dark:text-gray-400 hover:text-pink-500 transition-colors duration-300"
             >
               {link}
             </a>
@@ -57,12 +57,12 @@ const Footer: React.FC = () => {
         {/* Newsletter Subscription */}
         <div className="space-y-2">
           <h2 className="text-lg font-semibold">Subscribe</h2>
-          <p className="text-gray-400">Get updates about new products and offers.</p>
+          <p className="text-gray-600 dark:text-gray-400">Get updates about new products and offers.</p>
           <form className="flex flex-col sm:flex-row gap-2 mt-2">
             <input
               type="email"
               placeholder="Enter your email"
-              className="flex-1 px-4 py-2 rounded-lg border border-gray-700 bg-gray-800 text-gray-100 focus:outline-none focus:border-pink-500"
+              className="flex-1 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:border-pink-500"
             />
             <button
               type="submit"
@@ -75,7 +75,7 @@ const Footer: React.FC = () => {
       </div>
 
       {/* Bottom Bar */}
-      <div className="mt-8 border-t border-gray-700 pt-4 text-center text-gray-500 text-sm">
+      <div className="mt-8 bg-[#e5e5e5] dark:bg-[#111827] text-gray-500 dark:text-gray-400 px-6 py-4 text-center text-sm transition-colors duration-300 rounded-t-lg">
         &copy; {new Date().getFullYear()} 90+ Styles. All rights reserved.
       </div>
     </footer>

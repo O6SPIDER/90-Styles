@@ -1,10 +1,10 @@
 import React from "react";
-import Navbar from "../../components/Navbar/Navbar";
+import Navbar from "./Navbar";
 import HeroSection from "./HeroSection";
 import AboutSection from "./AboutSection";
 import ProductsSection from "./ProductsSection" // Assuming you have a ProductsSection component
 import ContactSection from "./ContactSection";
-import Footer from "../../components/Footer/Footer"; // Assuming you have a Footer component
+import Footer from "./Footer"; // Assuming you have a Footer component
 
 const LandingPage: React.FC = () => {
   return (

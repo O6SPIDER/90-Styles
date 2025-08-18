@@ -20,7 +20,7 @@ const Navbar: React.FC = () => {
   return (
     <nav
       className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[92%] md:w-[85%] rounded-full
-                bg-[#f5f5f5]/20 dark:bg-gray-900/30 border border-white/20 dark:border-gray-800/50
+                bg-[#f5f5f5]/20 dark:bg-[#0f172a]/50 border border-white/20 dark:border-gray-700/50
                 backdrop-blur-xl shadow-xl px-6 py-3 transition-colors duration-500"
     >
       <div className="flex justify-between items-center">
@@ -42,7 +42,7 @@ const Navbar: React.FC = () => {
               key={i}
               href={link.href}
               whileHover={{ scale: 1.05 }}
-              className="relative text-gray-700 dark:text-gray-300 font-medium text-lg group"
+              className="relative text-gray-800 dark:text-gray-200 font-medium text-lg group transition-colors duration-300"
             >
               {link.name}
               <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-gradient-to-r from-pink-500 to-yellow-400 transition-all duration-300 group-hover:w-full"></span>
@@ -126,14 +126,14 @@ const Navbar: React.FC = () => {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="md:hidden mt-4 rounded-2xl bg-white/80 dark:bg-gray-900/90 p-6 shadow-xl backdrop-blur-lg"
+            className="md:hidden mt-4 rounded-2xl bg-[#f5f5f5]/90 dark:bg-[#0f172a]/90 p-6 shadow-xl backdrop-blur-lg transition-colors duration-300"
           >
             <div className="flex flex-col items-center space-y-4">
               {navLinks.map((link, i) => (
                 <a
                   key={i}
                   href={link.href}
-                  className="text-lg text-gray-700 dark:text-gray-300 hover:text-pink-500 dark:hover:text-yellow-400 font-medium transition"
+                  className="text-lg text-gray-800 dark:text-gray-200 hover:text-pink-500 dark:hover:text-yellow-400 font-medium transition-colors duration-300"
                 >
                   {link.name}
                 </a>

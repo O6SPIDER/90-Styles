@@ -6,11 +6,15 @@ const ContactSection: React.FC = () => {
   return (
     <section
       id="contact"
-      className="relative w-full py-20 bg-darkBg text-white overflow-hidden"
+      className="relative w-full py-20 bg-[#f5f5f5] text-gray-900 dark:bg-gray-900 dark:text-white overflow-hidden"
     >
       {/* Glow Backgrounds */}
-      <div className="absolute top-20 left-20 w-72 h-72 bg-yellow-400/10 rounded-full blur-3xl animate-pulse" />
-      <div className="absolute bottom-20 right-20 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl animate-pulse delay-300" />
+      <div className="absolute top-20 left-20 w-72 h-72 
+                      bg-yellow-300/30 dark:bg-yellow-400/20 
+                      rounded-full blur-3xl animate-pulse" />
+      <div className="absolute bottom-20 right-20 w-96 h-96 
+                      bg-amber-400/30 dark:bg-amber-500/20 
+                      rounded-full blur-3xl animate-pulse delay-300" />
 
       <div className="relative z-10 max-w-6xl mx-auto px-6 lg:px-12">
         {/* Section Header */}
@@ -26,7 +30,7 @@ const ContactSection: React.FC = () => {
               Get in Touch
             </span>
           </h2>
-          <p className="text-gray-300 max-w-2xl mx-auto">
+          <p className="text-gray-700 dark:text-gray-300 max-w-2xl mx-auto">
             Have questions, custom requests, or partnership ideas? Let’s talk and make it happen.
           </p>
         </motion.div>
@@ -39,7 +43,7 @@ const ContactSection: React.FC = () => {
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 1 }}
             viewport={{ once: true }}
-            className="bg-white/5 backdrop-blur-lg rounded-2xl p-8 shadow-xl space-y-6"
+            className="bg-white dark:bg-gray-800/60 backdrop-blur-lg rounded-2xl p-8 shadow-xl space-y-6 border border-gray-200 dark:border-white/10"
             onSubmit={(e) => {
               e.preventDefault();
               alert("Message sent!");
@@ -54,7 +58,7 @@ const ContactSection: React.FC = () => {
                 type="text"
                 placeholder="Your name"
                 required
-                className="w-full px-4 py-3 rounded-lg bg-white/10 text-white focus:ring-2 focus:ring-yellow-400 outline-none"
+                className="w-full px-4 py-3 rounded-lg bg-gray-100 dark:bg-white/10 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-400 outline-none"
               />
             </div>
             <div>
@@ -66,7 +70,7 @@ const ContactSection: React.FC = () => {
                 type="email"
                 placeholder="your@email.com"
                 required
-                className="w-full px-4 py-3 rounded-lg bg-white/10 text-white focus:ring-2 focus:ring-yellow-400 outline-none"
+                className="w-full px-4 py-3 rounded-lg bg-gray-100 dark:bg-white/10 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-400 outline-none"
               />
             </div>
             <div>
@@ -78,7 +82,7 @@ const ContactSection: React.FC = () => {
                 placeholder="Write your message..."
                 rows={5}
                 required
-                className="w-full px-4 py-3 rounded-lg bg-white/10 text-white focus:ring-2 focus:ring-yellow-400 outline-none"
+                className="w-full px-4 py-3 rounded-lg bg-gray-100 dark:bg-white/10 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-400 outline-none"
               ></textarea>
             </div>
             <motion.button
@@ -102,30 +106,30 @@ const ContactSection: React.FC = () => {
             className="flex flex-col justify-center space-y-8"
           >
             <div className="flex items-center gap-4">
-              <div className="p-4 bg-yellow-400/20 rounded-xl">
-                <Mail className="w-6 h-6 text-yellow-400" />
+              <div className="p-4 bg-yellow-300/30 dark:bg-yellow-400/20 rounded-xl">
+                <Mail className="w-6 h-6 text-yellow-500 dark:text-yellow-400" />
               </div>
               <div>
                 <h4 className="font-semibold text-lg">Email</h4>
-                <p className="text-gray-300">support@90styles.com</p>
+                <p className="text-gray-700 dark:text-gray-300">support@90styles.com</p>
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <div className="p-4 bg-yellow-400/20 rounded-xl">
-                <Phone className="w-6 h-6 text-yellow-400" />
+              <div className="p-4 bg-yellow-300/30 dark:bg-yellow-400/20 rounded-xl">
+                <Phone className="w-6 h-6 text-yellow-500 dark:text-yellow-400" />
               </div>
               <div>
                 <h4 className="font-semibold text-lg">Phone</h4>
-                <p className="text-gray-300">+1 (555) 123-4567</p>
+                <p className="text-gray-700 dark:text-gray-300">+1 (555) 123-4567</p>
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <div className="p-4 bg-yellow-400/20 rounded-xl">
-                <MapPin className="w-6 h-6 text-yellow-400" />
+              <div className="p-4 bg-yellow-300/30 dark:bg-yellow-400/20 rounded-xl">
+                <MapPin className="w-6 h-6 text-yellow-500 dark:text-yellow-400" />
               </div>
               <div>
                 <h4 className="font-semibold text-lg">Location</h4>
-                <p className="text-gray-300">Accra, Ghana</p>
+                <p className="text-gray-700 dark:text-gray-300">Accra, Ghana</p>
               </div>
             </div>
           </motion.div>
