@@ -1,5 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
+import About from "../../assets/About.jpg";
 
 const AboutSection: React.FC = () => {
   return (
@@ -8,11 +9,11 @@ const AboutSection: React.FC = () => {
       className="relative w-full py-20 bg-[#f5f5f5] text-gray-900 dark:bg-gray-900 dark:text-white overflow-hidden"
     >
       {/* Decorative glowing circles */}
-      <div className="absolute top-10 left-10 w-64 h-64 
-                      bg-yellow-300/40 dark:bg-yellow-400/20 
+      <div className="absolute top-10 left-10 w-64 h-64
+                      bg-yellow-300/40 dark:bg-yellow-400/20
                       rounded-full blur-3xl animate-pulse" />
-      <div className="absolute bottom-20 right-10 w-80 h-80 
-                      bg-amber-400/30 dark:bg-amber-500/20 
+      <div className="absolute bottom-20 right-10 w-80 h-80
+                      bg-amber-400/30 dark:bg-amber-500/20
                       rounded-full blur-3xl animate-pulse delay-300" />
 
       <div className="relative z-10 max-w-6xl mx-auto px-6 lg:px-12 flex flex-col lg:flex-row items-center gap-12">
@@ -22,12 +23,13 @@ const AboutSection: React.FC = () => {
           whileInView={{ opacity: 1, x: 0 }}
           transition={{ duration: 1 }}
           viewport={{ once: true }}
-          className="flex-1"
+          className="flex-1 flex justify-center lg:justify-start"
         >
           <img
-            src="https://images.unsplash.com/photo-1607605969723-7d8bbaecd19b?auto=format&fit=crop&w=900&q=80"
+            src={About}
             alt="About Us"
-            className="rounded-2xl shadow-2xl border border-gray-200 dark:border-white/10"
+            className="rounded-2xl shadow-2xl border border-gray-200 dark:border-white/10
+                      max-h-[400px] w-full object-cover"
           />
         </motion.div>
 
