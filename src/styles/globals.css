@@ -10,3 +10,6 @@ body {
     @apply bg-gray-900 text-white;
 }
 }
+html {
+    @apply scroll-smooth;
+}

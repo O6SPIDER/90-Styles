@@ -34,7 +34,7 @@ const cardVariants: Variants = {
 
 const ProductSection: React.FC = () => {
   return (
-    <section className="bg-[#f5f5f5] dark:bg-gray-900 py-16 px-6">
+    <section id="products" className="bg-[#f5f5f5] dark:bg-gray-900 py-16 px-6">
       {/* Heading */}
       <motion.div
         initial={{ opacity: 0, y: 40 }}

@@ -7,8 +7,9 @@ const Navbar: React.FC = () => {
   const { theme, toggleTheme } = useTheme();
 
   const navLinks = [
-    { name: "Home", href: "#/" },
+    { name: "Home", href: "#" },
     { name: "About Us", href: "#about" },
+    { name: "Products", href: "#products" },
     { name: "Contact Us", href: "#contact" },
   ];
 
@@ -140,7 +141,7 @@ const Navbar: React.FC = () => {
               ))}
               <a
                 href="#"
-                className="w-full text-center px-6 py-3 rounded-full text-white font-semibold 
+                className="w-full text-center px-6 py-3 rounded-full text-white font-semibold
                           bg-gradient-to-r from-pink-500 to-yellow-400 shadow-lg hover:shadow-2xl transition"
               >
                 Go to Store

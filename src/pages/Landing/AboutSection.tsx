@@ -3,7 +3,10 @@ import { motion } from "framer-motion";
 
 const AboutSection: React.FC = () => {
   return (
-    <section className="relative w-full py-20 bg-[#f5f5f5] text-gray-900 dark:bg-gray-900 dark:text-white overflow-hidden">
+    <section
+      id="about"
+      className="relative w-full py-20 bg-[#f5f5f5] text-gray-900 dark:bg-gray-900 dark:text-white overflow-hidden"
+    >
       {/* Decorative glowing circles */}
       <div className="absolute top-10 left-10 w-64 h-64 
                       bg-yellow-300/40 dark:bg-yellow-400/20 
