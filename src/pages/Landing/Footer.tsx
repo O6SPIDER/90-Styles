@@ -3,7 +3,14 @@ import { motion } from "framer-motion";
 import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn } from "react-icons/fa";
 
 const Footer: React.FC = () => {
-  const navLinks = ["Home", "About Us", "Products", "Contact Us"];
+  // Match these with your actual section IDs (e.g., <section id="about">, <section id="products">, etc.)
+  const navLinks = [
+    { name: "Home", href: "#home" },
+    { name: "About Us", href: "#about" },
+    { name: "Products", href: "#products" },
+    { name: "Contact Us", href: "#contact" },
+  ];
+
   const socialLinks = [
     { icon: <FaFacebookF />, href: "https://facebook.com" },
     { icon: <FaTwitter />, href: "https://twitter.com" },
@@ -46,10 +53,10 @@ const Footer: React.FC = () => {
           {navLinks.map((link, idx) => (
             <a
               key={idx}
-              href={`#${link.toLowerCase().replace(/\s+/g, "")}`}
+              href={link.href}
               className="block text-gray-600 dark:text-gray-400 hover:text-pink-500 transition-colors duration-300"
             >
-              {link}
+              {link.name}
             </a>
           ))}
         </div>

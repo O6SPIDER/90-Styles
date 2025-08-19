@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 
 const HeroSection: React.FC = () => {
   return (
-    <section className="relative w-full h-screen overflow-hidden">
+    <section id="home"className="relative w-full h-screen overflow-hidden">
       {/* Background image */}
       <div
         className="absolute inset-0 bg-cover bg-center z-0"
