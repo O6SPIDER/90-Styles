@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "../../hooks/useTheme";
+import { Sun, Moon } from "lucide-react";
 
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -19,12 +20,12 @@ const Navbar: React.FC = () => {
   }, [theme]);
 
   return (
-    <nav
-      className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[92%] md:w-[85%] rounded-full
-                bg-[#f5f5f5]/20 dark:bg-[#0f172a]/50 border border-white/20 dark:border-gray-700/50
-                backdrop-blur-xl shadow-xl px-6 py-3 transition-colors duration-500"
-    >
-      <div className="flex justify-between items-center">
+    <nav className="fixed top-0 left-0 w-full z-50 bg-transparent">
+      <div
+        className="flex justify-between items-center w-[92%] md:w-[85%] mx-auto rounded-full
+                   bg-[#f5f5f5]/20 dark:bg-[#0f172a]/50 border border-white/20 dark:border-gray-700/50
+                   backdrop-blur-xl shadow-xl px-6 py-3 mt-4 transition-colors duration-500"
+      >
         {/* Logo */}
         <motion.a
           href="#"
@@ -61,33 +62,27 @@ const Navbar: React.FC = () => {
             className="p-2 rounded-full bg-gray-200 dark:bg-gray-800 hover:scale-110 transition-transform duration-300"
           >
             {theme === "light" ? (
-              <motion.svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 text-yellow-500"
-                viewBox="0 0 24 24"
-                fill="currentColor"
+              <motion.div
                 initial={{ opacity: 0, rotate: -90 }}
                 animate={{ opacity: 1, rotate: 0 }}
+                transition={{ duration: 0.5 }}
               >
-                <circle cx="12" cy="12" r="5" />
-              </motion.svg>
+                <Sun className="h-5 w-5 text-yellow-500" />
+              </motion.div>
             ) : (
-              <motion.svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 text-gray-100"
-                viewBox="0 0 24 24"
-                fill="currentColor"
+              <motion.div
                 initial={{ opacity: 0, rotate: 90 }}
                 animate={{ opacity: 1, rotate: 0 }}
+                transition={{ duration: 0.5 }}
               >
-                <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
-              </motion.svg>
+                <Moon className="h-5 w-5 text-gray-100" />
+              </motion.div>
             )}
           </motion.button>
 
           {/* CTA Button */}
           <motion.a
-            href="#"
+            href="/store"
             whileHover={{ scale: 1.08 }}
             whileTap={{ scale: 0.95 }}
             className="hidden md:inline-flex px-6 py-3 rounded-full text-white font-semibold 
@@ -107,7 +102,6 @@ const Navbar: React.FC = () => {
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
             >
               <path
                 strokeLinecap="round"
@@ -127,7 +121,7 @@ const Navbar: React.FC = () => {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="md:hidden mt-4 rounded-2xl bg-[#f5f5f5]/90 dark:bg-[#0f172a]/90 p-6 shadow-xl backdrop-blur-lg transition-colors duration-300"
+            className="md:hidden mt-2 w-[92%] mx-auto rounded-2xl bg-[#f5f5f5]/90 dark:bg-[#0f172a]/90 p-6 shadow-xl backdrop-blur-lg transition-colors duration-300"
           >
             <div className="flex flex-col items-center space-y-4">
               {navLinks.map((link, i) => (
@@ -135,14 +129,16 @@ const Navbar: React.FC = () => {
                   key={i}
                   href={link.href}
                   className="text-lg text-gray-800 dark:text-gray-200 hover:text-pink-500 dark:hover:text-yellow-400 font-medium transition-colors duration-300"
+                  onClick={() => setIsMenuOpen(false)}
                 >
                   {link.name}
                 </a>
               ))}
               <a
-                href="#"
+                href="/store"
                 className="w-full text-center px-6 py-3 rounded-full text-white font-semibold
                           bg-gradient-to-r from-pink-500 to-yellow-400 shadow-lg hover:shadow-2xl transition"
+                onClick={() => setIsMenuOpen(false)}
               >
                 Go to Store
               </a>

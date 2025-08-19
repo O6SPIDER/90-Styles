@@ -31,15 +31,15 @@ const HeroSection: React.FC = () => {
           Authentic Sports Jerseys for Every Champion
         </p>
         <motion.a
-          href="#"
+          href="#products"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           className="px-8 py-4 rounded-full font-semibold 
-                     bg-yellow-500 text-black dark:text-white dark:bg-yellow-600 
-                     hover:bg-yellow-400 dark:hover:bg-yellow-500 
-                     transition-colors duration-300 shadow-lg"
+                    bg-yellow-500 text-black dark:text-white dark:bg-yellow-600 
+                    hover:bg-yellow-400 dark:hover:bg-yellow-500 
+                    transition-colors duration-300 shadow-lg"
         >
-          Shop Now
+          Explore
         </motion.a>
       </motion.div>
     </section>
