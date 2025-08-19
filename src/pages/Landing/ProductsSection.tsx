@@ -1,10 +1,10 @@
 import React from "react";
 import { motion } from "framer-motion";
 import type { Variants } from "framer-motion";
-import BarcelonaJersey from "../../assets/jerseys/Bacalona.jpg";
-import LiverpoolJersey from "../../assets/jerseys/Liverpool.jpg";
-import BayernJersey from "../../assets/jerseys/Bayern.jpg";
-import PSGJersey from "../../assets/jerseys/PSG.jpg";
+import BarcelonaJersey from "../../assets/jerseys/Barcelona.png";
+import LiverpoolJersey from "../../assets/jerseys/Liverpool.png";
+import BayernJersey from "../../assets/jerseys/Bayern.png";
+import PSGJersey from "../../assets/jerseys/PSG.png";
 
 // Mock product data
 const products = [
