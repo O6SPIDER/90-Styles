@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ShoppingCart, Search, User, Sun, Moon } from "lucide-react";
+import { ShoppingCart, Search, Sun, Moon } from "lucide-react";
+import ProfileDropdown from "./ProfileDropdown"; // your dropdown
 
 export type StoreNavbarProps = {
   cartCount: number;
@@ -26,9 +27,9 @@ const useTheme = () => {
   useEffect(() => {
     try {
       const storedTheme = localStorage.getItem("theme");
-      if (storedTheme === "dark") {
-        setTheme("dark");
-        document.documentElement.classList.add("dark");
+      if (storedTheme) {
+        setTheme(storedTheme);
+        document.documentElement.classList.add(storedTheme);
       } else {
         document.documentElement.classList.add("light");
       }
@@ -40,7 +41,6 @@ const useTheme = () => {
   return { theme, toggleTheme };
 };
 
-// Mock products
 const mockProducts = [
   "Liverpool FC Jersey",
   "Barcelona Jersey",
@@ -58,16 +58,18 @@ const StoreNavbar: React.FC<StoreNavbarProps> = ({ cartCount, onCartToggle, onSe
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [activeIndex, setActiveIndex] = useState(-1);
 
-  const desktopSearchRef = useRef<HTMLDivElement | null>(null);
-  const mobileSearchRef = useRef<HTMLDivElement | null>(null);
+  const [user, setUser] = useState<{ name: string } | null>(null); // null = not logged in
+
+  const desktopSearchRef = useRef<HTMLDivElement>(null);
+  const mobileSearchRef = useRef<HTMLDivElement>(null);
 
   const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
     const handleOutside = (e: MouseEvent) => {
       if (
-        (desktopSearchRef.current && !desktopSearchRef.current.contains(e.target as Node)) &&
-        (mobileSearchRef.current && !mobileSearchRef.current.contains(e.target as Node))
+        desktopSearchRef.current && !desktopSearchRef.current.contains(e.target as Node) &&
+        mobileSearchRef.current && !mobileSearchRef.current.contains(e.target as Node)
       ) {
         setSuggestions([]);
         setActiveIndex(-1);
@@ -79,9 +81,7 @@ const StoreNavbar: React.FC<StoreNavbarProps> = ({ cartCount, onCartToggle, onSe
 
   const filterSuggestions = (value: string) => {
     if (!value.trim()) return setSuggestions([]);
-    const filtered = mockProducts
-      .filter((p) => p.toLowerCase().includes(value.toLowerCase()))
-      .slice(0, 8);
+    const filtered = mockProducts.filter(p => p.toLowerCase().includes(value.toLowerCase())).slice(0, 8);
     setSuggestions(filtered);
     setActiveIndex(filtered.length ? 0 : -1);
   };
@@ -105,8 +105,8 @@ const StoreNavbar: React.FC<StoreNavbarProps> = ({ cartCount, onCartToggle, onSe
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (!suggestions.length) return;
-    if (e.key === "ArrowDown") setActiveIndex((i) => Math.min(i + 1, suggestions.length - 1));
-    else if (e.key === "ArrowUp") setActiveIndex((i) => Math.max(i - 1, 0));
+    if (e.key === "ArrowDown") setActiveIndex(i => Math.min(i + 1, suggestions.length - 1));
+    else if (e.key === "ArrowUp") setActiveIndex(i => Math.max(i - 1, 0));
     else if (e.key === "Enter") {
       const chosen = activeIndex >= 0 ? suggestions[activeIndex] : searchTerm;
       setSearchTerm(chosen);
@@ -127,15 +127,13 @@ const StoreNavbar: React.FC<StoreNavbarProps> = ({ cartCount, onCartToggle, onSe
           {suggestions.map((s, i) => (
             <li
               key={s + i}
-              onMouseDown={(e) => e.preventDefault()}
+              onMouseDown={e => e.preventDefault()}
               onClick={() => {
                 setSearchTerm(s);
                 commitSearch(s);
               }}
               className={`px-4 py-2 cursor-pointer text-sm ${
-                i === activeIndex
-                  ? "bg-pink-500 text-white"
-                  : "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-100"
+                i === activeIndex ? "bg-pink-500 text-white" : "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-100"
               }`}
             >
               {s}
@@ -148,13 +146,11 @@ const StoreNavbar: React.FC<StoreNavbarProps> = ({ cartCount, onCartToggle, onSe
 
   return (
     <>
-      {/* Sticky Navbar */}
       <nav className="sticky top-0 left-0 w-full z-50 backdrop-blur-xl">
         <div className="flex items-center w-[92%] md:w-[85%] mx-auto mt-4 rounded-full
           bg-[#f5f5f5]/20 dark:bg-[#0f172a]/50 border border-white/20 dark:border-gray-700/50
           shadow-xl px-6 py-3 transition-colors duration-500 justify-between">
 
-          {/* Logo */}
           <motion.div className="text-2xl font-extrabold tracking-wide bg-gradient-to-r from-pink-500 to-yellow-400 bg-clip-text text-transparent">
             90+ Styles
           </motion.div>
@@ -166,7 +162,7 @@ const StoreNavbar: React.FC<StoreNavbarProps> = ({ cartCount, onCartToggle, onSe
                 <input
                   type="text"
                   value={searchTerm}
-                  onChange={(e) => handleInputChange(e.target.value)}
+                  onChange={e => handleInputChange(e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder="Search products…"
                   className="w-full rounded-full py-2 pl-4 pr-10 text-sm text-gray-800 dark:text-white
@@ -191,9 +187,15 @@ const StoreNavbar: React.FC<StoreNavbarProps> = ({ cartCount, onCartToggle, onSe
               {cartCount > 0 && <span className="absolute -top-1 -right-1 bg-pink-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">{cartCount}</span>}
             </motion.button>
 
-            <motion.a href="/profile" whileTap={{ scale: 0.9 }} className="p-2 rounded-full bg-gray-200 dark:bg-gray-800 hover:scale-110 transition-transform duration-300">
-              <User className="h-5 w-5 text-gray-800 dark:text-gray-100" />
-            </motion.a>
+            {/* Show login/signup or profile dropdown */}
+            {user ? (
+              <ProfileDropdown onLogout={() => setUser(null)} />
+            ) : (
+              <div className="flex items-center space-x-2">
+                <a href="/login" className="px-4 py-2 rounded-full bg-pink-500 text-white hover:bg-pink-600 transition">Login</a>
+                <a href="/signup" className="px-4 py-2 rounded-full bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-gray-700 transition">Sign Up</a>
+              </div>
+            )}
           </div>
 
           {/* Mobile actions */}
@@ -217,7 +219,7 @@ const StoreNavbar: React.FC<StoreNavbarProps> = ({ cartCount, onCartToggle, onSe
           <input
             type="text"
             value={searchTerm}
-            onChange={(e) => handleInputChange(e.target.value)}
+            onChange={e => handleInputChange(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Search products…"
             className="w-full rounded-full py-2 pl-4 pr-10 text-sm text-gray-800 dark:text-white
@@ -245,10 +247,14 @@ const StoreNavbar: React.FC<StoreNavbarProps> = ({ cartCount, onCartToggle, onSe
                 <span className="text-gray-800 dark:text-gray-100 font-medium">Cart</span>
               </button>
 
-              <a href="/profile" className="flex items-center space-x-2 p-2 rounded-full bg-gray-200 dark:bg-gray-800 w-full justify-center hover:scale-105 transition-transform duration-300">
-                <User className="h-5 w-5 text-gray-800 dark:text-gray-100" />
-                <span className="text-gray-800 dark:text-gray-100 font-medium">Profile</span>
-              </a>
+              {user ? (
+                <ProfileDropdown onLogout={() => setUser(null)} />
+              ) : (
+                <div className="flex flex-col w-full space-y-2">
+                  <a href="/login" className="w-full text-center px-4 py-2 rounded-full bg-pink-500 text-white hover:bg-pink-600 transition">Login</a>
+                  <a href="/signup" className="w-full text-center px-4 py-2 rounded-full bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-gray-700 transition">Sign Up</a>
+                </div>
+              )}
             </div>
           </motion.div>
         )}
