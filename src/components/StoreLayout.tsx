@@ -1,24 +1,48 @@
-import React from "react";
-import type { ReactNode } from "react";
+import React, { useState, type ReactNode } from "react";
 import StoreNavbar from "../components/store/StoreNavbar";
+import CartPage from "../pages/Store/CartPage"; // Make sure path is correct
+import { motion, AnimatePresence } from "framer-motion";
 
 type StoreLayoutProps = {
   children: ReactNode;
   cartCount: number;
-  onCartToggle: () => void;
   onSearch: (term: string) => void;
 };
 
-const StoreLayout: React.FC<StoreLayoutProps> = ({ children, cartCount, onCartToggle, onSearch }) => {
+const StoreLayout: React.FC<StoreLayoutProps> = ({ children, cartCount, onSearch }) => {
+  const [showCart, setShowCart] = useState(false);
+
+  const toggleCart = () => setShowCart((prev) => !prev);
+
   return (
     <div className="w-full min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white">
-      {/* Navbar that scrolls with page */}
-      <StoreNavbar cartCount={cartCount} onCartToggle={onCartToggle} onSearch={onSearch} />
+      {/* Navbar */}
+      <StoreNavbar cartCount={cartCount} onCartToggle={toggleCart} onSearch={onSearch} />
 
-      {/* Main content area */}
-      <main className="mt-6 px-4 md:px-8 lg:px-16">
-        {children}
-      </main>
+      {/* Main content */}
+      <main className="pt-24 px-4 md:px-8 lg:px-16">{children}</main>
+
+      {/* Cart Drawer */}
+      <AnimatePresence>
+        {showCart && (
+          <motion.div
+            key="cart-drawer"
+            initial={{ x: "100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "100%" }}
+            transition={{ type: "spring", stiffness: 300 }}
+            className="fixed top-0 right-0 h-full w-full md:w-[400px] bg-white dark:bg-gray-900 shadow-lg z-50 overflow-auto"
+          >
+            <CartPage />
+            <button
+              onClick={toggleCart}
+              className="absolute top-4 right-4 text-gray-800 dark:text-gray-100 font-bold"
+            >
+              Close
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

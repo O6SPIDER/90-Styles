@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+// App.tsx
+import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./styles/globals.css";
 
@@ -10,34 +11,29 @@ import ForgotPassword from "./pages/Auth/ForgotPassword";
 import StorePage from "./pages/Store/StorePage";
 import ProductPage from "./pages/Store/ProductPage";
 
+// Context
+import { CartProvider } from "./context/CartContext";
+
 const App: React.FC = () => {
-  const [cart, setCart] = useState<number[]>([]);
-
-  const handleAddToCart = (id: number) => {
-    setCart((prev) => [...prev, id]);
-    console.log("Cart updated:", [...cart, id]);
-  };
-
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-300">
-      <Router>
-        <Routes>
-          {/* Landing Page */}
-          <Route path="/" element={<LandingPage />} />
+      <CartProvider>
+        <Router>
+          <Routes>
+            {/* Landing Page */}
+            <Route path="/" element={<LandingPage />} />
 
-          {/* Auth Pages */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
+            {/* Auth Pages */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
 
-          {/* Store & Product */}
-          <Route path="/store" element={<StorePage />} />
-          <Route
-            path="/product/:id"
-            element={<ProductPage onAddToCart={handleAddToCart} />}
-          />
-        </Routes>
-      </Router>
+            {/* Store & Product */}
+            <Route path="/store" element={<StorePage />} />
+            <Route path="/product/:id" element={<ProductPage />} />
+          </Routes>
+        </Router>
+      </CartProvider>
     </div>
   );
 };

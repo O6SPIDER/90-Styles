@@ -1,4 +1,3 @@
-// src/components/store/Cart.tsx
 import React from "react";
 import CartItem from "./CartItem";
 import { FiX } from "react-icons/fi";

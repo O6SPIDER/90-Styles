@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import StoreLayout from "../../components/StoreLayout";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useCart } from "../../hooks/useCart"; // ✅ import your cart hook
 
 // Define Product type
 type Product = {
@@ -23,7 +24,8 @@ const ProductSkeleton: React.FC = () => (
 const StorePage: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [cartCount] = useState(0); // Cart count
+  const { items } = useCart(); // ✅ get items from cart
+  const cartCount = items.length; // ✅ dynamic cart count
 
   useEffect(() => {
     // Simulate API fetch
@@ -65,17 +67,8 @@ const StorePage: React.FC = () => {
     console.log("Search term:", term);
   };
 
-  // Cart toggle handler
-  const handleCartToggle = () => {
-    console.log("Cart toggled");
-  };
-
   return (
-    <StoreLayout
-      cartCount={cartCount}
-      onCartToggle={handleCartToggle}
-      onSearch={handleSearch}
-    >
+    <StoreLayout cartCount={cartCount} onSearch={handleSearch}>
       <div className="max-w-7xl mx-auto px-6 py-10">
         <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-8">
           Our Store

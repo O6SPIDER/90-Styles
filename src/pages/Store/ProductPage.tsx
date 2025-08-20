@@ -1,84 +1,67 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { motion } from "framer-motion";
+import React, { useMemo, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import StoreLayout from "../../components/StoreLayout";
+import ProductDetails from "../../components/store/ProductDetails";
+import { productsData } from "../../data/products";
+import { useCart } from "../../hooks/useCart";
 
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-  description: string;
-}
+const ProductPage: React.FC = () => {
+  const { id } = useParams();
+  const { addToCart } = useCart();
+  const navigate = useNavigate();
+  const productId = Number(id);
 
-interface ProductPageProps {
-  onAddToCart: (id: number) => void;
-}
+  const product = useMemo(
+    () => productsData.find((p) => p.id === productId),
+    [productId]
+  );
 
-const ProductPage: React.FC<ProductPageProps> = ({ onAddToCart }) => {
-  const { id } = useParams<{ id: string }>(); // product ID from route
-  const [product, setProduct] = useState<Product | null>(null);
+  const [cartCount, setCartCount] = useState(0);
 
-  useEffect(() => {
-    // Simulate fetching a product by ID
-    // Replace with your real API call: `/api/products/${id}`
-    const fetchProduct = async () => {
-      const res = await fetch(`/api/products/${id}`);
-      if (res.ok) {
-        const data = await res.json();
-        setProduct(data);
-      }
-    };
-    fetchProduct();
-  }, [id]);
+  const handleAddToCart = () => {
+    if (!product) return;
+    addToCart(product, 1);
+    setCartCount((c) => c + 1);
+  };
+
+  const handleCartToggle = () => {
+    // You can implement actual cart toggle logic here
+    console.log("Cart toggled");
+  };
+
+  const handleSearch = (term: string) => {
+    // You can implement actual search logic here
+    console.log("Search term:", term);
+  };
+
+  const layoutProps = {
+    cartCount,
+    onCartToggle: handleCartToggle,
+    onSearch: handleSearch,
+  };
 
   if (!product) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <p className="text-gray-500 dark:text-gray-300">Loading product...</p>
-      </div>
+      <StoreLayout {...layoutProps}>
+        <div className="max-w-6xl mx-auto px-6 py-16 text-center">
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
+            Product not found
+          </h2>
+          <button
+            onClick={() => navigate(-1)}
+            className="mt-6 px-5 py-2 rounded-lg bg-gray-200 dark:bg-gray-800"
+          >
+            Go Back
+          </button>
+        </div>
+      </StoreLayout>
     );
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-10">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-        {/* Product Image */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6 }}
-          className="rounded-2xl overflow-hidden shadow-lg"
-        >
-          <img
-            src={product.image}
-            alt={product.name}
-            className="w-full h-[400px] object-cover"
-          />
-        </motion.div>
-
-        {/* Product Info */}
-        <div className="flex flex-col justify-center">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-            {product.name}
-          </h1>
-          <p className="text-yellow-500 text-2xl font-semibold mt-2">
-            ${product.price}
-          </p>
-          <p className="mt-4 text-gray-700 dark:text-gray-300 leading-relaxed">
-            {product.description}
-          </p>
-
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => onAddToCart(product.id)}
-            className="mt-6 px-8 py-3 rounded-full bg-gradient-to-r from-yellow-400 to-amber-500 text-gray-900 dark:text-white font-semibold shadow hover:shadow-lg transition"
-          >
-            Add to Cart
-          </motion.button>
-        </div>
-      </div>
-    </div>
+    <StoreLayout {...layoutProps}>
+      <ProductDetails product={product} onAddToCart={handleAddToCart} />
+    </StoreLayout>
   );
 };
 

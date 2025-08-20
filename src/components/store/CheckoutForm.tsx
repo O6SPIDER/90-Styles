@@ -1,4 +1,3 @@
-// src/components/store/CheckoutForm.tsx
 import React, { useState } from "react";
 
 const CheckoutForm: React.FC = () => {
