@@ -71,29 +71,24 @@ const StoreNavbar: React.FC<StoreNavbarProps> = ({
 
   const { theme, toggleTheme } = useTheme();
   const location = useLocation();
-
-  // ✅ Detect if product details page
   const isProductDetailsPage = location.pathname.startsWith("/product");
 
-  // ✅ Navbar scroll hide/show (disabled on product details)
+  // Navbar hide/show on scroll (disabled for product pages)
   useEffect(() => {
     if (isProductDetailsPage) {
-      setShowNavbar(true); // Always show on product details
+      setShowNavbar(true);
       return;
     }
     const handleScroll = () => {
-      if (window.scrollY < lastScrollY.current) {
-        setShowNavbar(true); 
-      } else {
-        setShowNavbar(false); 
-      }
+      if (window.scrollY < lastScrollY.current) setShowNavbar(true);
+      else setShowNavbar(false);
       lastScrollY.current = window.scrollY;
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isProductDetailsPage]);
 
-  // ✅ Close suggestions when clicking outside
+  // Close search suggestions when clicking outside
   useEffect(() => {
     const handleOutside = (e: MouseEvent) => {
       if (
@@ -183,15 +178,14 @@ const StoreNavbar: React.FC<StoreNavbarProps> = ({
 
   return (
     <>
-      {/* ✅ Navbar: static on product details, scroll-hide on others */}
+      {/* Navbar */}
       <motion.nav
         initial={{ y: 0 }}
-        animate={{ y: isProductDetailsPage ? 0 : (showNavbar ? 0 : -80) }}
+        animate={{ y: isProductDetailsPage ? 0 : showNavbar ? 0 : -80 }}
         transition={{ duration: 0.3 }}
         className="fixed top-0 left-0 w-full z-50 backdrop-blur-xl"
       >
-        <div
-          className="flex items-center w-[92%] md:w-[85%] mx-auto mt-4 rounded-full
+        <div className="flex items-center w-[92%] md:w-[85%] mx-auto mt-4 rounded-full
           bg-[#f5f5f5]/20 dark:bg-[#0f172a]/50 border border-white/20 dark:border-gray-700/50
           shadow-xl px-6 py-3 transition-colors duration-500 justify-between"
         >
@@ -199,7 +193,7 @@ const StoreNavbar: React.FC<StoreNavbarProps> = ({
             90+ Styles
           </motion.div>
 
-          {/* Desktop search (hide on product details) */}
+          {/* Desktop search */}
           {!isProductDetailsPage && (
             <div className="hidden md:flex flex-1 justify-center mx-4">
               <div ref={desktopSearchRef} className="relative w-72">
@@ -233,11 +227,7 @@ const StoreNavbar: React.FC<StoreNavbarProps> = ({
               whileTap={{ rotate: 180, scale: 0.9 }}
               className="p-2 rounded-full bg-gray-200 dark:bg-gray-800 hover:scale-110 transition-transform duration-300"
             >
-              {theme === "light" ? (
-                <Sun className="h-5 w-5 text-yellow-500" />
-              ) : (
-                <Moon className="h-5 w-5 text-gray-100" />
-              )}
+              {theme === "light" ? <Sun className="h-5 w-5 text-yellow-500" /> : <Moon className="h-5 w-5 text-gray-100" />}
             </motion.button>
 
             <motion.button
@@ -253,22 +243,10 @@ const StoreNavbar: React.FC<StoreNavbarProps> = ({
               )}
             </motion.button>
 
-            {user ? (
-              <ProfileDropdown onLogout={() => setUser(null)} />
-            ) : (
+            {user ? <ProfileDropdown onLogout={() => setUser(null)} /> : (
               <div className="flex items-center space-x-2">
-                <a
-                  href="/login"
-                  className="px-4 py-2 rounded-full bg-pink-500 text-white hover:bg-pink-600 transition"
-                >
-                  Login
-                </a>
-                <a
-                  href="/signup"
-                  className="px-4 py-2 rounded-full bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-gray-700 transition"
-                >
-                  Sign Up
-                </a>
+                <a href="/login" className="px-4 py-2 rounded-full bg-pink-500 text-white hover:bg-pink-600 transition">Login</a>
+                <a href="/signup" className="px-4 py-2 rounded-full bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-gray-700 transition">Sign Up</a>
               </div>
             )}
           </div>
@@ -281,45 +259,44 @@ const StoreNavbar: React.FC<StoreNavbarProps> = ({
               whileTap={{ rotate: 180, scale: 0.9 }}
               className="p-2 rounded-full bg-gray-200 dark:bg-gray-800 hover:scale-110 transition-transform duration-300"
             >
-              {theme === "light" ? (
-                <Sun className="h-5 w-5 text-yellow-500" />
-              ) : (
-                <Moon className="h-5 w-5 text-gray-100" />
-              )}
+              {theme === "light" ? <Sun className="h-5 w-5 text-yellow-500" /> : <Moon className="h-5 w-5 text-gray-100" />}
             </motion.button>
 
+            {/* Always visible cart on mobile */}
+            <button
+              aria-label="Cart"
+              onClick={onCartToggle}
+              className="relative p-2 rounded-full bg-gray-200 dark:bg-gray-800 hover:scale-110 transition-transform duration-300"
+            >
+              <ShoppingCart className="h-5 w-5 text-gray-800 dark:text-gray-100" />
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-pink-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
+                  {cartCount}
+                </span>
+              )}
+            </button>
+
+            {/* Hamburger */}
             <button
               aria-label="Toggle menu"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="text-gray-800 dark:text-gray-200 focus:outline-none"
             >
-              <svg
-                className="w-8 h-8"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M4 6h16M4 12h16m-7 6h7"
-                ></path>
+              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7"></path>
               </svg>
             </button>
+
+            
           </div>
         </div>
       </motion.nav>
 
-      {/* ✅ Push content below navbar (fix search overlap) */}
       <div className="h-24 md:h-28"></div>
 
-      {/* Mobile search (hide on product details) */}
+      {/* Mobile search */}
       {!isProductDetailsPage && (
-        <div
-          className="md:hidden mt-2 w-[85%] mx-auto relative"
-          ref={mobileSearchRef}
-        >
+        <div className="md:hidden mt-2 w-[85%] mx-auto relative" ref={mobileSearchRef}>
           <form onSubmit={handleSearchSubmit} className="relative">
             <input
               type="text"
@@ -327,13 +304,9 @@ const StoreNavbar: React.FC<StoreNavbarProps> = ({
               onChange={(e) => handleInputChange(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Search products…"
-              className="w-full rounded-full py-2 pl-4 pr-10 text-sm text-gray-800 dark:text-white
-              bg-white/90 dark:bg-gray-800/90 border border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-pink-400 outline-none"
+              className="w-full rounded-full py-2 pl-4 pr-10 text-sm text-gray-800 dark:text-white bg-white/90 dark:bg-gray-800/90 border border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-pink-400 outline-none"
             />
-            <button
-              type="submit"
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-300 hover:text-pink-500"
-            >
+            <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-300 hover:text-pink-500">
               <Search size={18} />
             </button>
           </form>
@@ -341,42 +314,22 @@ const StoreNavbar: React.FC<StoreNavbarProps> = ({
         </div>
       )}
 
-      {/* Mobile menu */}
+      {/* Mobile menu dropdown */}
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="md:hidden mt-4 rounded-2xl bg-[#f5f5f5]/90 dark:bg-[#0f172a]/90 p-6 shadow-xl backdrop-blur-lg transition-colors duration-300 w-[92%] mx-auto"
+            className="md:hidden mt-4 rounded-2xl bg-[#f5f5f5]/90 dark:bg-[#0f172a]/90 p-6 shadow-xl backdrop-blur-lg transition-colors duration-300 w-[92%] mx-auto fixed top-24 z-50"
           >
             <div className="flex flex-col items-center space-y-4">
-              <button
-                onClick={onCartToggle}
-                className="flex items-center space-x-2 p-2 rounded-full bg-gray-200 dark:bg-gray-800 w-full justify-center hover:scale-105 transition-transform duration-300"
-              >
-                <ShoppingCart className="h-5 w-5 text-gray-800 dark:text-gray-100" />
-                <span className="text-gray-800 dark:text-gray-100 font-medium">
-                  Cart
-                </span>
-              </button>
+            
 
-              {user ? (
-                <ProfileDropdown onLogout={() => setUser(null)} />
-              ) : (
+              {user ? <ProfileDropdown onLogout={() => setUser(null)} /> : (
                 <div className="flex flex-col w-full space-y-2">
-                  <a
-                    href="/login"
-                    className="w-full text-center px-4 py-2 rounded-full bg-pink-500 text-white hover:bg-pink-600 transition"
-                  >
-                    Login
-                  </a>
-                  <a
-                    href="/signup"
-                    className="w-full text-center px-4 py-2 rounded-full bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-gray-700 transition"
-                  >
-                    Sign Up
-                  </a>
+                  <a href="/login" className="w-full text-center px-4 py-2 rounded-full bg-pink-500 text-white hover:bg-pink-600 transition">Login</a>
+                  <a href="/signup" className="w-full text-center px-4 py-2 rounded-full bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-gray-700 transition">Sign Up</a>
                 </div>
               )}
             </div>

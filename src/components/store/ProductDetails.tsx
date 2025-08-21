@@ -1,7 +1,8 @@
 import React, { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import type { Product } from "../../types/product";
-import { productsData } from "../../data/products"; // used to compute similar
+import { productsData } from "../../data/products";
+import { toast } from "react-hot-toast";
 
 type Props = {
   product: Product;
@@ -24,14 +25,14 @@ const ProductDetails: React.FC<Props> = ({ product, onAddToCart }) => {
     );
   }, [product.id, product.team, product.brand]);
 
-  // Debugging logs (now inside component)
+  // Debugging logs
   console.log("Current product:", product);
   console.log("Similar jerseys:", similar);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-10">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
-        {/* Left: Large Image (mobile on top) */}
+        {/* Left: Large Image */}
         <motion.div
           initial={{ opacity: 0, x: -24 }}
           animate={{ opacity: 1, x: 0 }}
@@ -101,8 +102,12 @@ const ProductDetails: React.FC<Props> = ({ product, onAddToCart }) => {
             </div>
           </div>
 
+          {/* Add to Cart Button with toast */}
           <button
-            onClick={() => onAddToCart(product.id, selectedSize)}
+            onClick={() => {
+              onAddToCart(product.id, selectedSize);
+              toast.success(`${product.name} added to cart!`);
+            }}
             className="w-full sm:w-auto px-6 py-3 rounded-lg bg-gradient-to-r from-pink-500 to-rose-600 text-white font-semibold shadow-md hover:shadow-lg transition"
           >
             Add to Cart
