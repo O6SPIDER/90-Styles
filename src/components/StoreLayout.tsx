@@ -4,7 +4,7 @@ import CartPage from "../pages/Store/CartPage"; // Make sure path is correct
 import { motion, AnimatePresence } from "framer-motion";
 import { Toaster } from "react-hot-toast"; // <-- Correct import
 
-type StoreLayoutProps = {
+export type StoreLayoutProps = {
   children: ReactNode;
   cartCount: number;
   onSearch: (term: string) => void;

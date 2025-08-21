@@ -42,6 +42,7 @@ const useTheme = () => {
   return { theme, toggleTheme };
 };
 
+// Mock products for search suggestions
 const mockProducts = [
   "Liverpool FC Jersey",
   "Barcelona Jersey",
@@ -73,7 +74,19 @@ const StoreNavbar: React.FC<StoreNavbarProps> = ({
   const location = useLocation();
   const isProductDetailsPage = location.pathname.startsWith("/product");
 
-  // Navbar hide/show on scroll (disabled for product pages)
+  // --- USER STATE MANAGEMENT ---
+  useEffect(() => {
+    // Read user info from localStorage on mount
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) setUser(JSON.parse(storedUser));
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    setUser(null);
+  };
+
+  // --- NAVBAR HIDE/SHOW ON SCROLL ---
   useEffect(() => {
     if (isProductDetailsPage) {
       setShowNavbar(true);
@@ -88,7 +101,7 @@ const StoreNavbar: React.FC<StoreNavbarProps> = ({
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isProductDetailsPage]);
 
-  // Close search suggestions when clicking outside
+  // --- CLOSE SEARCH WHEN CLICKING OUTSIDE ---
   useEffect(() => {
     const handleOutside = (e: MouseEvent) => {
       if (
@@ -243,7 +256,7 @@ const StoreNavbar: React.FC<StoreNavbarProps> = ({
               )}
             </motion.button>
 
-            {user ? <ProfileDropdown onLogout={() => setUser(null)} /> : (
+            {user ? <ProfileDropdown onLogout={handleLogout} /> : (
               <div className="flex items-center space-x-2">
                 <a href="/login" className="px-4 py-2 rounded-full bg-pink-500 text-white hover:bg-pink-600 transition">Login</a>
                 <a href="/signup" className="px-4 py-2 rounded-full bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-gray-700 transition">Sign Up</a>
@@ -262,7 +275,6 @@ const StoreNavbar: React.FC<StoreNavbarProps> = ({
               {theme === "light" ? <Sun className="h-5 w-5 text-yellow-500" /> : <Moon className="h-5 w-5 text-gray-100" />}
             </motion.button>
 
-            {/* Always visible cart on mobile */}
             <button
               aria-label="Cart"
               onClick={onCartToggle}
@@ -286,8 +298,6 @@ const StoreNavbar: React.FC<StoreNavbarProps> = ({
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7"></path>
               </svg>
             </button>
-
-            
           </div>
         </div>
       </motion.nav>
@@ -324,9 +334,7 @@ const StoreNavbar: React.FC<StoreNavbarProps> = ({
             className="md:hidden mt-4 rounded-2xl bg-[#f5f5f5]/90 dark:bg-[#0f172a]/90 p-6 shadow-xl backdrop-blur-lg transition-colors duration-300 w-[92%] mx-auto fixed top-24 z-50"
           >
             <div className="flex flex-col items-center space-y-4">
-            
-
-              {user ? <ProfileDropdown onLogout={() => setUser(null)} /> : (
+              {user ? <ProfileDropdown onLogout={handleLogout} /> : (
                 <div className="flex flex-col w-full space-y-2">
                   <a href="/login" className="w-full text-center px-4 py-2 rounded-full bg-pink-500 text-white hover:bg-pink-600 transition">Login</a>
                   <a href="/signup" className="w-full text-center px-4 py-2 rounded-full bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-gray-700 transition">Sign Up</a>

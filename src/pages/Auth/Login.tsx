@@ -1,15 +1,63 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import AuthLayout from "../../components/AuthLayout";
 import { FcGoogle } from "react-icons/fc";
+import { useState } from "react";
+
+// API base URL
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default function Login() {
+  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+
+    try {
+      const form = e.target as HTMLFormElement;
+      const usernameOrEmail = (form[0] as HTMLInputElement).value;
+      const password = (form[1] as HTMLInputElement).value;
+
+      const res = await fetch(`${API_URL}/accounts/login/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: usernameOrEmail, password }),
+      });
+
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.detail || "Invalid credentials");
+      }
+
+      const data = await res.json();
+      console.log("Login success:", data);
+
+      // Store JWT tokens in localStorage
+      localStorage.setItem("accessToken", data.access);
+      localStorage.setItem("refreshToken", data.refresh);
+
+      // Store user info (so navbar knows user is logged in)
+      localStorage.setItem("user", JSON.stringify({ name: data.user?.username || usernameOrEmail }));
+
+      // Redirect to store/dashboard
+      navigate("/store");
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Something went wrong");
+      }
+    }
+  };
+
   return (
     <AuthLayout title="Welcome Back" subtitle="Login to continue">
-      <form className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4">
         <input
-          type="email"
-          placeholder="Email address"
+          type="text"
+          placeholder="Username or Email"
           className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-pink-500"
         />
         <input
@@ -17,6 +65,8 @@ export default function Login() {
           placeholder="Password"
           className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-pink-500"
         />
+
+        {error && <p className="text-red-500 text-sm">{error}</p>}
 
         <div className="flex justify-between text-sm">
           <Link to="/forgot-password" className="text-pink-500 hover:underline">
