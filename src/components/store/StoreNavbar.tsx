@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ShoppingCart, Search, Sun, Moon } from "lucide-react";
-import { useLocation } from "react-router-dom"; 
+import { useLocation } from "react-router-dom";
 import ProfileDropdown from "./ProfileDropdown";
 
 export type StoreNavbarProps = {
