@@ -10,12 +10,18 @@ const CartPage: React.FC = () => {
     (sum: number, item: CartItem) => sum + item.price * item.quantity,
     0
   );
-
   const navigate = useNavigate();
+
+  const handleCheckout = () => {
+    if (items.length === 0) {
+      alert("Your cart is empty.");
+      return;
+    }
+    navigate("/checkout"); // Always redirect
+  };
 
   return (
     <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      {/* Back Button */}
       <button
         onClick={() => navigate(-1)}
         className="mb-6 inline-flex items-center text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white font-semibold transition"
@@ -33,7 +39,6 @@ const CartPage: React.FC = () => {
         </p>
       ) : (
         <div className="flex flex-col gap-6">
-          {/* Cart Items */}
           <div className="space-y-4">
             {items.map((item: CartItem) => (
               <motion.div
@@ -63,7 +68,6 @@ const CartPage: React.FC = () => {
                     </p>
                   </div>
 
-                  {/* Quantity & Remove */}
                   <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 mt-3 sm:mt-0">
                     <div className="flex items-center border rounded-lg dark:border-gray-600">
                       <button
@@ -102,7 +106,6 @@ const CartPage: React.FC = () => {
             ))}
           </div>
 
-          {/* Summary */}
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6">
             <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
               Order Summary
@@ -119,7 +122,10 @@ const CartPage: React.FC = () => {
               <span>Total</span>
               <span>${subtotal.toFixed(2)}</span>
             </div>
-            <button className="w-full px-6 py-3 rounded-lg bg-gradient-to-r from-pink-500 to-rose-600 text-white font-semibold shadow-md hover:shadow-lg transition">
+            <button
+              onClick={handleCheckout}
+              className="w-full px-6 py-3 rounded-lg bg-gradient-to-r from-pink-500 to-rose-600 text-white font-semibold shadow-md hover:shadow-lg transition"
+            >
               Proceed to Checkout
             </button>
           </div>

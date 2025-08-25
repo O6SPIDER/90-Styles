@@ -8,29 +8,55 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 export default function Signup() {
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
+    setSuccess(null);
     setLoading(true);
 
     try {
       const formData = new FormData(e.currentTarget);
-      const username = formData.get("username") as string;
-      const email = formData.get("email") as string;
+      const username = (formData.get("username") as string)?.trim();
+      const email = (formData.get("email") as string)?.trim();
       const password = formData.get("password") as string;
       const password2 = formData.get("password2") as string;
+      const full_name = (formData.get("full_name") as string)?.trim();
+      const phone = (formData.get("phone") as string)?.trim();
+      const address = (formData.get("address") as string)?.trim();
+    //const profile_picture = formData.get("profile_picture") as File;
 
+      // Basic validation
+      if (!username || !email || !password || !password2) {
+        throw new Error("Please fill in all required fields");
+      }
       if (password !== password2) {
         throw new Error("Passwords do not match");
       }
+      interface SignupPayload {
+  username: string;
+  email: string;
+  password: string;
+  full_name?: string;
+  phone?: string;
+  address?: string;
+}
+
+
+      // Prepare payload
+      const payload: SignupPayload = { username, email, password };
+      if (full_name) payload.full_name = full_name;
+      if (phone) payload.phone = phone;
+      if (address) payload.address = address;
+
 
       const res = await fetch(`${API_URL}/api/accounts/register/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, email, password }),
+        body: JSON.stringify(payload),
       });
 
       const data = await res.json();
@@ -45,16 +71,14 @@ export default function Signup() {
         throw new Error(msg);
       }
 
-      console.log("Signup success:", data);
+      // Success: show email verification message
+      setSuccess("Signup successful! Check your email to verify your account.");
 
-      // Redirect to login after successful signup
-      navigate("/login");
+      // Auto-redirect to login after 5 seconds
+      setTimeout(() => navigate("/login"), 5000);
     } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError("Something went wrong");
-      }
+      if (err instanceof Error) setError(err.message);
+      else setError("Something went wrong");
     } finally {
       setLoading(false);
     }
@@ -78,6 +102,30 @@ export default function Signup() {
           className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-pink-500"
         />
         <input
+          type="text"
+          name="full_name"
+          placeholder="Full Name (optional)"
+          className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-pink-500"
+        />
+        <input
+          type="text"
+          name="phone"
+          placeholder="Phone (optional)"
+          className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-pink-500"
+        />
+        <input
+          type="text"
+          name="address"
+          placeholder="Address (optional)"
+          className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-pink-500"
+        />
+        <input
+          type="file"
+          name="profile_picture"
+          accept="image/*"
+          className="w-full text-gray-900 dark:text-gray-100"
+        />
+        <input
           type="password"
           name="password"
           placeholder="Password"
@@ -93,6 +141,7 @@ export default function Signup() {
         />
 
         {error && <p className="text-red-500 text-sm">{error}</p>}
+        {success && <p className="text-green-500 text-sm">{success}</p>}
 
         <button
           type="submit"
@@ -133,14 +182,12 @@ export default function Signup() {
         </button>
       </form>
 
-      {/* Divider */}
       <div className="my-6 flex items-center gap-2">
         <span className="flex-1 h-px bg-gray-300 dark:bg-gray-700" />
         <span className="text-sm text-gray-500 dark:text-gray-400">OR</span>
         <span className="flex-1 h-px bg-gray-300 dark:bg-gray-700" />
       </div>
 
-      {/* Google Signup */}
       <motion.button
         whileHover={{ scale: 1.03 }}
         whileTap={{ scale: 0.97 }}
@@ -150,7 +197,6 @@ export default function Signup() {
         Sign Up with Google
       </motion.button>
 
-      {/* Login Link */}
       <p className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
         Already have an account?{" "}
         <Link to="/login" className="text-pink-500 font-semibold hover:underline">

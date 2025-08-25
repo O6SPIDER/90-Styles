@@ -10,6 +10,8 @@ import Login from "./pages/Auth/Login";
 import ForgotPassword from "./pages/Auth/ForgotPassword";
 import StorePage from "./pages/Store/StorePage";
 import ProductPage from "./pages/Store/ProductPage";
+import CartPage from "./pages/Store/CartPage";
+import CheckoutPage from "./pages/Store/CheckoutPage";
 
 // Context
 import { CartProvider } from "./context/CartContext";
@@ -31,6 +33,10 @@ const App: React.FC = () => {
             {/* Store & Product */}
             <Route path="/store" element={<StorePage />} />
             <Route path="/product/:id" element={<ProductPage />} />
+
+            {/* Cart & Checkout */}
+            <Route path="/cart" element={<CartPage />} />
+            <Route path="/checkout" element={<CheckoutPage />} />
           </Routes>
         </Router>
       </CartProvider>
