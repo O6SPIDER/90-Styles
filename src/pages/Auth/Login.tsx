@@ -4,51 +4,56 @@ import AuthLayout from "../../components/AuthLayout";
 import { FcGoogle } from "react-icons/fc";
 import { useState } from "react";
 
-// API base URL
+// API base URL from .env
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default function Login() {
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setLoading(true);
 
     try {
       const form = e.target as HTMLFormElement;
-      const usernameOrEmail = (form[0] as HTMLInputElement).value;
+      const usernameOrEmail = (form[0] as HTMLInputElement).value.trim();
       const password = (form[1] as HTMLInputElement).value;
 
-      const res = await fetch(`${API_URL}/accounts/login/`, {
+      if (!usernameOrEmail || !password) {
+        throw new Error("Please enter both username/email and password");
+      }
+
+      // Corrected URL with /api prefix
+      const res = await fetch(`${API_URL}/api/accounts/login/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username: usernameOrEmail, password }),
       });
 
+      const data = await res.json();
+
       if (!res.ok) {
-        const errData = await res.json();
-        throw new Error(errData.detail || "Invalid credentials");
+        // Use backend error message if available
+        throw new Error(data.detail || "Invalid credentials");
       }
 
-      const data = await res.json();
       console.log("Login success:", data);
 
-      // Store JWT tokens in localStorage
+      // Store JWT tokens and user info
       localStorage.setItem("accessToken", data.access);
       localStorage.setItem("refreshToken", data.refresh);
-
-      // Store user info (so navbar knows user is logged in)
-      localStorage.setItem("user", JSON.stringify({ name: data.user?.username || usernameOrEmail }));
+      localStorage.setItem("user", JSON.stringify(data.user));
 
       // Redirect to store/dashboard
       navigate("/store");
     } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError("Something went wrong");
-      }
+      if (err instanceof Error) setError(err.message);
+      else setError("Something went wrong");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -76,9 +81,14 @@ export default function Login() {
 
         <button
           type="submit"
-          className="w-full py-3 rounded-lg bg-gradient-to-r from-yellow-400 to-pink-500 text-white font-semibold shadow-md hover:shadow-lg transition"
+          disabled={loading}
+          className={`w-full py-3 rounded-lg text-white font-semibold shadow-md transition ${
+            loading
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-gradient-to-r from-yellow-400 to-pink-500 hover:shadow-lg"
+          }`}
         >
-          Login
+          {loading ? "Logging in..." : "Login"}
         </button>
       </form>
 
