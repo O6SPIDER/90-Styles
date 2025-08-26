@@ -23,7 +23,7 @@ const StoreLayout: React.FC<StoreLayoutProps> = ({ children, onSearch }) => {
       {/* ✅ No more cartCount prop here */}
       <StoreNavbar onCartToggle={toggleCart} onSearch={onSearch} />
 
-      <main className="pt-20 md:pt-24 px-4 md:px-8 lg:px-16">{children}</main>
+      <main className="pt-4 md:pt-2 px-4 md:px-8 lg:px-16">{children}</main>
 
       <AnimatePresence>
         {showCart && (
