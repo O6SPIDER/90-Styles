@@ -3,9 +3,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ShoppingCart, Search, Sun, Moon } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import ProfileDropdown from "./ProfileDropdown";
+import { useCart } from "../../hooks/useCart"; // <--- Import the useCart hook
 
+// Remove cartCount from the props type
 export type StoreNavbarProps = {
-  cartCount: number;
   onCartToggle: () => void;
   onSearch: (term: string) => void;
 };
@@ -102,7 +103,6 @@ const LogoutModal: React.FC<LogoutModalProps> = ({ onConfirm, onCancel }) => {
 
 // --- Main Store Navbar Component ---
 const StoreNavbar: React.FC<StoreNavbarProps> = ({
-  cartCount,
   onCartToggle,
   onSearch,
 }) => {
@@ -121,6 +121,10 @@ const StoreNavbar: React.FC<StoreNavbarProps> = ({
   const { theme, toggleTheme } = useTheme();
   const location = useLocation();
   const isProductDetailsPage = location.pathname.startsWith("/product");
+
+  // Get cart items and calculate count using the useCart hook
+  const { items } = useCart();
+  const cartCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
   // --- USER STATE MANAGEMENT ---
   useEffect(() => {
@@ -212,8 +216,7 @@ const StoreNavbar: React.FC<StoreNavbarProps> = ({
     if (!suggestions.length) return;
     if (e.key === "ArrowDown")
       setActiveIndex((i) => Math.min(i + 1, suggestions.length - 1));
-    else if (e.key === "ArrowUp")
-      setActiveIndex((i) => Math.max(i - 1, 0));
+    else if (e.key === "ArrowUp") setActiveIndex((i) => Math.max(i - 1, 0));
     else if (e.key === "Enter") {
       const chosen = activeIndex >= 0 ? suggestions[activeIndex] : searchTerm;
       setSearchTerm(chosen);

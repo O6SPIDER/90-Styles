@@ -12,6 +12,7 @@ import StorePage from "./pages/Store/StorePage";
 import ProductPage from "./pages/Store/ProductPage";
 import CartPage from "./pages/Store/CartPage";
 import CheckoutPage from "./pages/Store/CheckoutPage";
+import ThankYouPage from "./pages/Store/ThankYouPage";
 
 // Context
 import { CartProvider } from "./context/CartContext";
@@ -37,6 +38,9 @@ const App: React.FC = () => {
             {/* Cart & Checkout */}
             <Route path="/cart" element={<CartPage />} />
             <Route path="/checkout" element={<CheckoutPage />} />
+
+            {/* ThankYou */}
+            <Route path="/thank-you" element={<ThankYouPage />} />
           </Routes>
         </Router>
       </CartProvider>
