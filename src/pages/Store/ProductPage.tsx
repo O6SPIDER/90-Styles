@@ -1,13 +1,12 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import StoreLayout from "../../components/StoreLayout";
 import ProductDetails from "../../components/store/ProductDetails";
 import { productsData } from "../../data/products";
-import { useCart } from "../../hooks/useCart";
+
 
 const ProductPage: React.FC = () => {
   const { id } = useParams();
-  const { addToCart } = useCart();
   const navigate = useNavigate();
   const productId = Number(id);
 
@@ -16,28 +15,20 @@ const ProductPage: React.FC = () => {
     [productId]
   );
 
-  const [cartCount, setCartCount] = useState(0);
-
-  const handleAddToCart = () => {
-    if (!product) return;
-    addToCart(product, 1);
-    setCartCount((c) => c + 1);
-  };
-
   const handleCartToggle = () => {
-    // You can implement actual cart toggle logic here
+    // Optional: actual cart toggle logic
     console.log("Cart toggled");
   };
 
   const handleSearch = (term: string) => {
-    // You can implement actual search logic here
+    // Optional: implement search logic
     console.log("Search term:", term);
   };
 
+  // Props for StoreLayout
   const layoutProps = {
-    cartCount,
-    onCartToggle: handleCartToggle,
     onSearch: handleSearch,
+    onCartToggle: handleCartToggle,
   };
 
   if (!product) {
@@ -60,7 +51,7 @@ const ProductPage: React.FC = () => {
 
   return (
     <StoreLayout {...layoutProps}>
-      <ProductDetails product={product} onAddToCart={handleAddToCart} />
+      <ProductDetails product={product} />
     </StoreLayout>
   );
 };

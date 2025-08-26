@@ -1,30 +1,29 @@
+// C:\Users\SPIDER\Desktop\spiderwebs\90+Styles\frontend\src\components\StoreLayout.tsx
+
 import React, { useState, type ReactNode } from "react";
 import StoreNavbar from "../components/store/StoreNavbar";
 import CartPage from "../pages/Store/CartPage";
 import { motion, AnimatePresence } from "framer-motion";
 import { Toaster } from "react-hot-toast";
-import { useCart } from "../hooks/useCart"; // Import the hook here
 
 export type StoreLayoutProps = {
   children: ReactNode;
-  // cartCount: number; // This prop is no longer needed
   onSearch: (term: string) => void;
 };
 
 const StoreLayout: React.FC<StoreLayoutProps> = ({ children, onSearch }) => {
   const [showCart, setShowCart] = useState(false);
-  const { cartCount } = useCart(); // Get cartCount from the hook
 
   const toggleCart = () => setShowCart((prev) => !prev);
 
   return (
     <div className="w-full min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white">
       <Toaster position="top-right" reverseOrder={false} />
+      
+      {/* ✅ No more cartCount prop here */}
+      <StoreNavbar onCartToggle={toggleCart} onSearch={onSearch} />
 
-      {/* Pass the cartCount to StoreNavbar */}
-      <StoreNavbar cartCount= {cartCount} onCartToggle={toggleCart} onSearch={onSearch} />
-
-      <main className="pt-4 md:pt-2 px-4 md:px-8 lg:px-16">{children}</main>
+      <main className="pt-20 md:pt-24 px-4 md:px-8 lg:px-16">{children}</main>
 
       <AnimatePresence>
         {showCart && (
