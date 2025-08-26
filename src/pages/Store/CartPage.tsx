@@ -22,13 +22,6 @@ const CartPage: React.FC = () => {
 
   return (
     <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      <button
-        onClick={() => navigate(-1)}
-        className="mb-6 inline-flex items-center text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white font-semibold transition"
-      >
-        ← Back
-      </button>
-
       <h1 className="text-2xl sm:text-3xl font-bold mb-8 text-gray-900 dark:text-white">
         Shopping Cart
       </h1>

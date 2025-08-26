@@ -10,6 +10,7 @@ export type StoreNavbarProps = {
   onSearch: (term: string) => void;
 };
 
+// --- Custom Hook for Theme Management ---
 const useTheme = () => {
   const [theme, setTheme] = useState("light");
 
@@ -21,7 +22,7 @@ const useTheme = () => {
       document.documentElement.classList.remove("light", "dark");
       document.documentElement.classList.add(newTheme);
     } catch (e) {
-      console.error(e);
+      console.error("Failed to set theme in localStorage:", e);
     }
   };
 
@@ -35,14 +36,14 @@ const useTheme = () => {
         document.documentElement.classList.add("light");
       }
     } catch (e) {
-      console.error(e);
+      console.error("Failed to read theme from localStorage:", e);
     }
   }, []);
 
   return { theme, toggleTheme };
 };
 
-// Mock products for search suggestions
+// --- Mock products for search suggestions ---
 const mockProducts = [
   "Liverpool FC Jersey",
   "Barcelona Jersey",
@@ -54,6 +55,52 @@ const mockProducts = [
   "AC Milan Jersey",
 ];
 
+// --- Logout Confirmation Modal Component ---
+interface LogoutModalProps {
+  onConfirm: () => void;
+  onCancel: () => void;
+}
+
+const LogoutModal: React.FC<LogoutModalProps> = ({ onConfirm, onCancel }) => {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 bg-black/60 flex items-center justify-center z-50"
+    >
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.9, opacity: 0 }}
+        className="bg-white dark:bg-gray-900 rounded-2xl p-6 w-80 text-center shadow-xl"
+      >
+        <h2 className="text-lg font-bold text-gray-800 dark:text-white mb-4">
+          Confirm Logout
+        </h2>
+        <p className="text-sm text-gray-600 dark:text-gray-300 mb-6">
+          Are you sure you want to log out?
+        </p>
+        <div className="flex justify-center gap-4">
+          <button
+            onClick={onCancel}
+            className="px-4 py-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-gray-600 transition"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={onConfirm}
+            className="px-4 py-2 rounded-full bg-pink-500 text-white hover:bg-pink-600 transition"
+          >
+            Logout
+          </button>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+};
+
+// --- Main Store Navbar Component ---
 const StoreNavbar: React.FC<StoreNavbarProps> = ({
   cartCount,
   onCartToggle,
@@ -65,6 +112,7 @@ const StoreNavbar: React.FC<StoreNavbarProps> = ({
   const [activeIndex, setActiveIndex] = useState(-1);
   const [user, setUser] = useState<{ name: string } | null>(null);
   const [showNavbar, setShowNavbar] = useState(true);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const lastScrollY = useRef(0);
 
   const desktopSearchRef = useRef<HTMLDivElement>(null);
@@ -76,14 +124,25 @@ const StoreNavbar: React.FC<StoreNavbarProps> = ({
 
   // --- USER STATE MANAGEMENT ---
   useEffect(() => {
-    // Read user info from localStorage on mount
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) setUser(JSON.parse(storedUser));
+    try {
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) setUser(JSON.parse(storedUser));
+    } catch (e) {
+      console.error("Failed to parse user from localStorage:", e);
+      setUser(null); // Clear invalid user data
+    }
   }, []);
 
   const handleLogout = () => {
+    // Corrected logic: Remove specific authentication tokens and user data.
     localStorage.removeItem("user");
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+
+    // Update state and redirect
     setUser(null);
+    setShowLogoutModal(false);
+    window.location.href = "/login";
   };
 
   // --- NAVBAR HIDE/SHOW ON SCROLL ---
@@ -93,9 +152,13 @@ const StoreNavbar: React.FC<StoreNavbarProps> = ({
       return;
     }
     const handleScroll = () => {
-      if (window.scrollY < lastScrollY.current) setShowNavbar(true);
-      else setShowNavbar(false);
-      lastScrollY.current = window.scrollY;
+      const currentScrollY = window.scrollY;
+      if (currentScrollY < lastScrollY.current) {
+        setShowNavbar(true);
+      } else {
+        setShowNavbar(false);
+      }
+      lastScrollY.current = currentScrollY;
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
@@ -118,6 +181,7 @@ const StoreNavbar: React.FC<StoreNavbarProps> = ({
     return () => document.removeEventListener("mousedown", handleOutside);
   }, []);
 
+  // --- Search Logic ---
   const filterSuggestions = (value: string) => {
     if (!value.trim()) return setSuggestions([]);
     const filtered = mockProducts
@@ -191,14 +255,14 @@ const StoreNavbar: React.FC<StoreNavbarProps> = ({
 
   return (
     <>
-      {/* Navbar */}
       <motion.nav
         initial={{ y: 0 }}
         animate={{ y: isProductDetailsPage ? 0 : showNavbar ? 0 : -80 }}
         transition={{ duration: 0.3 }}
         className="fixed top-0 left-0 w-full z-50 backdrop-blur-xl"
       >
-        <div className="flex items-center w-[92%] md:w-[85%] mx-auto mt-4 rounded-full
+        <div
+          className="flex items-center w-[92%] md:w-[85%] mx-auto mt-4 rounded-full
           bg-[#f5f5f5]/20 dark:bg-[#0f172a]/50 border border-white/20 dark:border-gray-700/50
           shadow-xl px-6 py-3 transition-colors duration-500 justify-between"
         >
@@ -256,7 +320,7 @@ const StoreNavbar: React.FC<StoreNavbarProps> = ({
               )}
             </motion.button>
 
-            {user ? <ProfileDropdown onLogout={handleLogout} /> : (
+            {user ? <ProfileDropdown onLogout={() => setShowLogoutModal(true)} /> : (
               <div className="flex items-center space-x-2">
                 <a href="/login" className="px-4 py-2 rounded-full bg-pink-500 text-white hover:bg-pink-600 transition">Login</a>
                 <a href="/signup" className="px-4 py-2 rounded-full bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-gray-700 transition">Sign Up</a>
@@ -328,20 +392,67 @@ const StoreNavbar: React.FC<StoreNavbarProps> = ({
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
+            initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="md:hidden mt-4 rounded-2xl bg-[#f5f5f5]/90 dark:bg-[#0f172a]/90 p-6 shadow-xl backdrop-blur-lg transition-colors duration-300 w-[92%] mx-auto fixed top-24 z-50"
+            exit={{ opacity: 0, y: -20 }}
+            className="md:hidden fixed top-[110px] left-1/2 -translate-x-1/2 w-[92%] bg-white dark:bg-gray-900 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 z-40 p-4"
           >
-            <div className="flex flex-col items-center space-y-4">
-              {user ? <ProfileDropdown onLogout={handleLogout} /> : (
-                <div className="flex flex-col w-full space-y-2">
-                  <a href="/login" className="w-full text-center px-4 py-2 rounded-full bg-pink-500 text-white hover:bg-pink-600 transition">Login</a>
-                  <a href="/signup" className="w-full text-center px-4 py-2 rounded-full bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-gray-700 transition">Sign Up</a>
-                </div>
-              )}
-            </div>
+            {user ? (
+              <div className="flex flex-col gap-2">
+                <a
+                  href="/profile"
+                  className="w-full text-left px-4 py-2 rounded-lg text-gray-800 dark:text-gray-100 font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+                >
+                  Profile
+                </a>
+                <a
+                  href="/orders"
+                  className="w-full text-left px-4 py-2 rounded-lg text-gray-800 dark:text-gray-100 font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+                >
+                  Orders
+                </a>
+                <a
+                  href="/settings"
+                  className="w-full text-left px-4 py-2 rounded-lg text-gray-800 dark:text-gray-100 font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+                >
+                  Settings
+                </a>
+                <button
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    setShowLogoutModal(true);
+                  }}
+                  className="w-full text-left px-4 py-2 rounded-lg text-red-500 font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+                >
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-2">
+                <a
+                  href="/login"
+                  className="w-full text-center px-4 py-2 rounded-full bg-pink-500 text-white hover:bg-pink-600 transition"
+                >
+                  Login
+                </a>
+                <a
+                  href="/signup"
+                  className="w-full text-center px-4 py-2 rounded-full bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-gray-700 transition"
+                >
+                  Sign Up
+                </a>
+              </div>
+            )}
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showLogoutModal && (
+          <LogoutModal
+            onConfirm={handleLogout}
+            onCancel={() => setShowLogoutModal(false)}
+          />
         )}
       </AnimatePresence>
     </>
